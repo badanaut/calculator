@@ -35,8 +35,10 @@ button{
     cursor: pointer;
 }
 
-#delete { grid-area: delete; }
-#clear { grid-area: clear; }
+#delete { grid-area: delete; 
+          background-color: #EF233C;}
+#clear { grid-area: clear; 
+         background-color: #EF233C;}
 .keys{
     display: grid;
     grid-template-areas: 
@@ -51,7 +53,8 @@ button{
 }
 
 .operations{
-    background-color: #EF233C;
+    background-color: white;
+    color: #2B2D42;
 }
 
 #display{
