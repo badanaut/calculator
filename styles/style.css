@@ -26,7 +26,7 @@ body{
     height: 20%;
 }
 
-button{
+button, #equal{
     background-color: #2B2D42;
     color: white;
     font-size: 30px;
@@ -64,14 +64,14 @@ button{
 
 }
 
-#input-nr{
+#big-nr{
     font-size: 25px;
     font-weight: bold;
     padding-right: 10px;
     padding-bottom: 10px;
 }
 
-#previous-nr{
+#small-nr{
     font-size: 20px;
     padding-right: 10px;
 }

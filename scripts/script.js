@@ -1,23 +1,20 @@
 const deleteBtn   = document.getElementById('delete');
 const clearBtn    = document.getElementById('clear');
-const zeroBtn     = document.getElementById('zero');
-const oneBtn      = document.getElementById('one');
-const twoBtn      = document.getElementById('two');
-const threeBtn    = document.getElementById('three');
-const fourBtn     = document.getElementById('four');
-const fiveBtn     = document.getElementById('five');
-const sixBtn      = document.getElementById('six');
-const sevenBtn    = document.getElementById('seven');
-const eightBtn    = document.getElementById('eight');
-const nineBtn     = document.getElementById('nine');
 const dotBtn      = document.getElementById('dot');
 const divideBtn   = document.getElementById('divide');
 const multiplyBtn = document.getElementById('multiply');
 const subtractBtn = document.getElementById('subtract');
 const addBtn      = document.getElementById('add');
 const equalBtn    = document.getElementById('equal');
-const resultNr    = document.getElementById('result-nr');
-const inputNr     = document.getElementById('input-nr');
+const bigNr       = document.getElementById('big-nr');
+const smallNr     = document.getElementById('small-nr');
+const numbers     = document.querySelectorAll(".numbers")
+const operations  = document.querySelectorAll(".operations")
+
+let inputNumber="", n1="", n2="", result="";
+let operator="", mathOperator="";
+
+let getNumber = () => bigNr.textContent;
 
 add      = (a, b) => a+b;
 subtract = (a, b) => a-b;
@@ -33,12 +30,51 @@ function operate(a, b, operator){
     }
 }
 
+operations.forEach(function(btn){
+    btn.addEventListener("click", function(e){
+        operator = e.target.textContent;
+        if(n1===""){
+            n1=getNumber();
+            smallNr.textContent = n1 + " " + operator;
+            bigNr.textContent="";
+            inputNumber="";
+        }
+        else if(n2===""){
+            n2=getNumber();
+            inputNumber="";
+        }
+        if(operator==="="){
+            mathOperator=smallNr.textContent.slice(-1);
+            n1 = Number(n1);
+            n2 = Number(n2);
+            result = operate(n1, n2, mathOperator)
+            bigNr.textContent = result;
+            smallNr.textContent = "";
+            inputNumber="";
+            n1=result;
+            n2="";
+            
+        }
+
+    });
+});
+
 deleteBtn.addEventListener('click', ()=>{
-    if(inputNr.textContent){
-        inputNr.textContent = inputNr.textContent.slice(0, -1);
+    if(bigNr.textContent){
+        bigNr.textContent = bigNr.textContent.slice(0, -1);
     }
 })
 
 clearBtn.addEventListener('click', () => {
-    inputNr.textContent="";
-    resultNr.textContent = "";})
+    smallNr.textContent="";
+    bigNr.textContent = "0";})
+
+numbers.forEach(function(button){
+        button.addEventListener('click',(e) => {
+            inputNumber += e.target.textContent;
+            bigNr.textContent = inputNumber;
+        });
+    });
+
+
+
