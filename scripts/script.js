@@ -1,110 +1,118 @@
-const deleteBtn   = document.getElementById('delete');
-const clearBtn    = document.getElementById('clear');
-const bigNr       = document.getElementById('big-nr');
-const smallNr     = document.getElementById('small-nr');
-const numbers     = document.querySelectorAll(".numbers")
-const operations  = document.querySelectorAll(".operations")
+const deleteButton              = document.getElementById('delete');
+const clearButton               = document.getElementById('clear');
+const currentOperandElement     = document.getElementById('current-operand');
+const previousOperandElement    = document.getElementById('previous-operand');
+const numberButtons             = document.querySelectorAll(".numbers")
+const operationButtons          = document.querySelectorAll(".operations")
+const equalButton               = document.getElementById("equal")
 
-let inputNumber="", n1="", n2="", result="", operator="", mathOperator="";
-
-let getNumber = () => bigNr.textContent;
-
-add      = (a, b) => Number.isInteger(a+b) ? a+b : (a+b).toFixed(2);
-subtract = (a, b) => Number.isInteger(a-b) ? a-b : (a-b).toFixed(2);
-multiply = (a, b) => Number.isInteger(a*b) ? a*b : (a*b).toFixed(2);
-divide   = (a, b) => Number.isInteger(a/b) ? a/b : (a/b).toFixed(2);
-
-function operate(a, b, operator){
-    switch(operator){
-        case "+": return add(a,b);
-        case "-": return subtract(a,b);
-        case "×": return multiply(a,b);
-        case "÷": return divide(a,b);
-    }
-}
-
-function displayResult(operator){
-
-    if(smallNr.textContent.slice(-1)==="="){
-        n1=getNumber();
-        smallNr.textContent = n1 + " " + operator;
-        bigNr.textContent="";
-        inputNumber="";
+class Calculator{
+    constructor(previousOperandElement, currentOperandElement){
+        this.previousOperandElement = previousOperandElement;
+        this.currentOperandElement  = currentOperandElement;
+        this.clearDisplay();        
     }
 
-    if(n1===""){
-        n1=getNumber();
-        smallNr.textContent = n1 + " " + operator;
-        bigNr.textContent="";
-        inputNumber="";
-    }
-    else if(n2===""){
-        n2=getNumber();
-        inputNumber="";
-    }
-    
-    
-    if(operator==="=" || (n1!="" && n2!="")){
-        mathOperator=smallNr.textContent.slice(-1);
-        n1 = Number(n1);
-        n2 = Number(n2);
-        result = operate(n1, n2, mathOperator)
-        smallNr.textContent = n1 + mathOperator + n2 + " =";
-        bigNr.textContent = result;
-        inputNumber="";
-        n1="";
-        n2="";            
-    }
-}
-
-
-operations.forEach(function(btn){
-    btn.addEventListener("click", function(e){
-        operator = e.target.textContent;
-        if(operator==="=" && bigNr.textContent==="0"){
-            inputNumber="0";
-            bigNr.textContent="0"
-        }else{
-            displayResult(operator);
+    appendNumber(number){
+        if(this.currentOperand.includes(".") && number===".") return
+        if(this.currentOperand==="" && number==="."){
+            this.currentOperand="0.";
+            return
         }
-    });
-});
-
-deleteBtn.addEventListener('click', ()=>{
-    if(bigNr.textContent.length===1 || bigNr.textContent===""){
-        bigNr.textContent = "0";
-        inputNumber="0"
-    }else{
-        bigNr.textContent = bigNr.textContent.slice(0, -1);
+        this.currentOperand = this.currentOperand.toString() + number.toString();
     }
+
+    chooseOperation(operation){
+
+        if(this.currentOperand==='') return
+        if(this.previousOperand!==''){
+            this.operate();
+        }
+        this.operation       = operation;
+        this.previousOperand = this.currentOperand;
+        this.currentOperand  ='';
+        
+
+    }
+
+    operate(){
+        let result;
+        let previousNr = parseFloat(this.previousOperand);
+        let currentNr  = parseFloat(this.currentOperand);
+        if(isNaN(previousNr) || isNaN(currentNr)) return
+
+        switch(this.operation){
+            case "+": 
+                result = previousNr + currentNr;
+                break;
+            case "-": 
+                result = previousNr - currentNr;
+                break;
+            case "×": 
+                result = previousNr * currentNr;
+                break;
+            case "÷": 
+                result = previousNr / currentNr;
+                break;
+            default:
+                return
+        }
+        this.currentOperand  = result;
+        this.previousOperand = '';
+        this.operation       = undefined;
+
+    }
+    updateDisplay(){
+        this.currentOperandElement.innerText  = this.currentOperand;
+        if(this.operation != undefined){
+            this.previousOperandElement.innerText = 
+            `${this.previousOperand} ${this.operation}`;
+        }
+        else{
+            this.previousOperandElement.innerText = "";
+        }
+    }
+
+    delete(){
+        this.currentOperand = this.currentOperand.toString().slice(0, -1)
+    }
+
+    clearDisplay(){
+        this.currentOperand  = '';
+        this.previousOperand = '';
+        this.operation       = undefined;
+    }
+}
+
+
+const calculator = new Calculator(previousOperandElement, currentOperandElement);
+
+
+numberButtons.forEach(button =>{
+    button.addEventListener('click', () => {
+        calculator.appendNumber(button.innerText);
+        calculator.updateDisplay();
+    })
 })
 
-clearBtn.addEventListener('click', () => {
-    smallNr.textContent="";
-    bigNr.textContent = "0";
-    inputNumber=""})
+operationButtons.forEach(button =>{
+    button.addEventListener('click', () => {
+        calculator.chooseOperation(button.innerText);
+        calculator.updateDisplay();
+    })
+})
 
-numbers.forEach(function(button){
-        button.addEventListener('click',(e) => {
-            if(e.target.textContent==="." && bigNr.textContent==="0"){
-                inputNumber = "0.";
-            }
-            else if(e.target.textContent==="0" && bigNr.textContent==="0"){
-                inputNumber = "0";
-            }
-            else if(bigNr.textContent==="0"){
-                inputNumber="";
-                inputNumber += e.target.textContent;
-            }else if(bigNr.textContent.indexOf(".")!==-1 && e.target.textContent==="."){
-                inputNumber=getNumber();
-            }
-            else{
-                inputNumber += e.target.textContent;
-            }
-            
-            bigNr.textContent = inputNumber;
-        });
-    });
+equalButton.addEventListener('click', () => {
+        calculator.operate();
+        calculator.updateDisplay();
+})
 
+clearButton.addEventListener('click', () => {
+    calculator.clearDisplay();
+    calculator.updateDisplay();
+})
 
-
+deleteButton.addEventListener('click', () => {
+    calculator.delete();
+    calculator.updateDisplay();
+})

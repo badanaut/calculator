@@ -1,5 +1,5 @@
 *{
-    /* box-sizing: border-box; */
+    box-sizing: border-box;
 }
 body{
     display: flex;
@@ -33,12 +33,16 @@ button, #equal{
     margin-top: 10px;
     border-radius: 15px;
     cursor: pointer;
+    border-width: thin;
 }
 
-#delete { grid-area: delete; 
-          background-color: #EF233C;}
-#clear { grid-area: clear; 
-         background-color: #EF233C;}
+#delete { grid-area: delete;}
+#clear { grid-area: clear;}
+
+#delete, #clear{
+    background-color: #EF233C;
+}
+         
 .keys{
     display: grid;
     grid-template-areas: 
@@ -61,17 +65,23 @@ button, #equal{
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    justify-content: space-between;
+    word-wrap: break-word;
+    word-break: break-all;
 
 }
 
-#big-nr{
+#current-operand{
     font-size: 25px;
     font-weight: bold;
-    padding-right: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
 }
 
-#small-nr{
+#previous-operand{
     font-size: 20px;
-    padding-right: 10px;
+    padding: 10px;
+}
+
+button:hover{
+    opacity: 0.8;
 }
